@@ -52,24 +52,22 @@ def delete_mods(mc_dir):
         os.remove(os.path.join(mod_dir, f))
 
 def install_mod(mod_dict, mc_modded_dir, mc_version):
-    log(f'Starting mod installation: {mod_dict["name"]}', 'green')
     mod = Mod(mod_dict['resource'])
     try:
         mod.install(mc_modded_dir, mc_version)
-        log(f'Finished mod installation: {mod_dict["name"]}', 'green')
     except ModVersionNotFoundError:
-        if 'alternative' in mod_dict['resource']:
+        if 'alternative' in mod_dict:
             questions = [
                 {
                     'type': 'confirm',
-                    'message': f'{mod_dict["name"]} is not available for {mc_version}. Should I try installing {mod_dict["resource"]["alternative"]["name"]} instead? Y/n',
+                    'message': f'{mod_dict["name"]} is not available for {mc_version}. Should I try installing {mod_dict["alternative"]["name"]} instead? Y/n',
                     'name': 'install',
                     'default': True,
                 }
             ]
             answers = prompt(questions, style=style)
             if answers['install']:
-                install_mod(mod_dict['resource']['alternative'], mc_modded_dir, mc_version)
+                install_mod(mod_dict['alternative'], mc_modded_dir, mc_version)
 
 def log(string, color, font='slant', figlet=False):
     if colored:
@@ -158,17 +156,17 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
     delete_mods(mc_modded_dir)
 
     # TODO: Progress bar or checklist rather than message spam
-    for mod in mods:
-        try:
-            install_mod(mod, mc_modded_dir, mc_version)
-        except InvalidModResourceError:
-            log(f'The mod data for {mod["name"]} was invalid', 'red')
-            mods.remove(mod)
-        except Exception as e:
-            log(f'An unknown error was encountered while installing {mod["name"]}:', 'red')
-            pprint(e)
-            mods.remove(mod)
-        
+    with click.progressbar(mods, label='Installing Mods') as bar:
+        for mod in mods:
+            try:
+                install_mod(mod, mc_modded_dir, mc_version)
+            except InvalidModResourceError:
+                log(f'The mod data for {mod["name"]} was invalid', 'red')
+                mods.remove(mod)
+            except Exception as e:
+                log(f'An unknown error was encountered while installing {mod["name"]}:', 'red')
+                pprint(e)
+                mods.remove(mod)
         
     log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')
 

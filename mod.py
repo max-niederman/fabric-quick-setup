@@ -21,6 +21,7 @@ class Mod:
     def __init__(self, resource: dict):
         self.resource = resource
     
+    # TODO: Implement dependencies
     def install(self, mc_dir: str, mc_version: str):
         if self.resource['type'] == 'github':
             # Get Latest Asset for Minecraft Version

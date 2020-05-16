@@ -5,16 +5,28 @@
         "resource": {
             "type": "github",
             "repo": "gnembon/fabric-carpet",
-            "release": null,
-            "alternative": {
-                "id": "quick-carpet",
-                "name": "Quick Carpet",
-                "resource": {
-                    "type": "github",
-                    "repo": "gnembon/fabric-carpet",
-                    "release": null
-                }
+            "release": null
+        },
+        "alternative": {
+            "id": "quick-carpet",
+            "name": "Quick Carpet",
+            "resource": {
+                "type": "github",
+                "repo": "gnembon/quick-carpet",
+                "release": null
             }
         }
+    },
+    {
+        "id": "optifine",
+        "name": "Optifine",
+        "resource": {},
+        "dependencies": [
+            {
+                "id": "optifabric",
+                "name": "Optifabric",
+                "resource": {}
+            }
+        ]
     }
 ]
