@@ -1,7 +1,20 @@
 [
     {
+        "id": "carpet",
         "name": "Carpet Mod",
-        "type": "github",
-        "repo": "gnembon/fabric-carpet"
+        "resource": {
+            "type": "github",
+            "repo": "gnembon/fabric-carpet",
+            "release": null,
+            "alternative": {
+                "id": "quick-carpet",
+                "name": "Quick Carpet",
+                "resource": {
+                    "type": "github",
+                    "repo": "gnembon/fabric-carpet",
+                    "release": null
+                }
+            }
+        }
     }
 ]
