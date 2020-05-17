@@ -113,6 +113,7 @@ def ask_mc_dirs(appdata_path):
     return answers
 
 def ask_version():
+    # TODO: Version validation
     questions = [
         {
             'type': 'input',

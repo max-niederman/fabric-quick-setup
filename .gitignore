@@ -11,8 +11,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-Pipfile
-Pipfile.lock
 build/
 develop-eggs/
 dist/
