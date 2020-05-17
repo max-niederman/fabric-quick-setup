@@ -95,6 +95,12 @@ def install_mod(mod_dict, mc_modded_dir, mc_version):
         else:
             raise
 
+def resolve_dependencies(mods: list, mod_list: list):
+    dependencies = set()
+    for mod in mods:
+        dependencies.update(mod['dependencies'])
+    return [mod for mod in mod_list if mod['id'] in dependencies]
+
 def ask_mc_dirs(appdata_path):
     questions = [
         {
@@ -161,11 +167,13 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
         mc_version = ask_version()
     
     mod_list = requests.get(mod_list_url).json()
+    #mod_list = json.load(open('mods.json'))
     if mod_ids:
         mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     else:
         mod_names = ask_mods(mod_list)
         mods = [mod for mod in mod_list if mod['name'] in mod_names]
+    mods[:0] = resolve_dependencies(mods, mod_list)
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
@@ -176,6 +184,7 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
     log.print_log('Starting mod installation. This may take a while...', 'green')
     delete_mods(mc_modded_dir)
 
+    # Install Mods
     with click.progressbar( mods, 
                             label='Installing Mods',
                             show_percent=False,

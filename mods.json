@@ -34,25 +34,29 @@
             "repo": "Prospector/ModMenu",
             "version-agnostic": true,
             "release": null
-        }
+        },
+        "dependencies": [
+            "fabric"
+        ]
     },
     {
         "id": "optifine",
         "name": "Optifine",
         "resource": {
-            "type": "optifine",
-            "dependencies": [
-                {
-                    "id": "optifabric",
-                    "name": "Optifabric",
-                    "resource": {
-                        "type": "github",
-                        "repo": "modmuss50/OptiFabric",
-                        "version-agnostic": true,
-                        "release": null
-                    }
-                }
-            ]
+            "type": "optifine"
+        },
+        "dependencies": [
+            "optifabric"
+        ]
+    },
+    {
+        "id": "optifabric",
+        "name": "Optifabric",
+        "resource": {
+            "type": "github",
+            "repo": "modmuss50/OptiFabric",
+            "version-agnostic": true,
+            "release": null
         }
     }
 ]
