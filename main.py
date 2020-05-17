@@ -33,7 +33,30 @@ style = style_from_dict({
     Token.Question: ''
 })
 
-def fabric(mc_dir, mc_version):
+class Log:
+    def __init__(self, queue=[]):
+        self.queue = queue
+    
+    def print_log(self, string, color, font='slant', figlet=False):
+        if colored:
+            if not figlet:
+                six.print_(colored(string, color))
+            else:
+                six.print_(colored(figlet_format(
+                    string, font=font), color))
+        else:
+            six.print_(string)
+    
+    def queue_log(self, color, font='slant', figlet=False):
+        self.queue.append((color, font, figlet))
+    
+    def print_queue(self):
+        for log in self.queue:
+            self.print_log(*log)
+
+log = Log()
+
+def fabric(mc_dir, mc_version): 
     subprocess.run(['java', 
         '-jar', 
         'fabric-installer.jar', 
@@ -72,16 +95,6 @@ def install_mod(mod_dict, mc_modded_dir, mc_version):
                 install_mod(mod_dict['alternative'], mc_modded_dir, mc_version)
         else:
             raise
-
-def log(string, color, font='slant', figlet=False):
-    if colored:
-        if not figlet:
-            six.print_(colored(string, color))
-        else:
-            six.print_(colored(figlet_format(
-                string, font=font), color))
-    else:
-        six.print_(string)
 
 def ask_mc_dirs(appdata_path):
     questions = [
@@ -132,8 +145,8 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
     CLI to install Fabric Loader and Popular Mods
     """
-    log('Fabric Quick Setup', color='blue', figlet=True)
-    log('Welcome to Fabric Quick Setup', 'green')
+    log.print_log('Fabric Quick Setup', 'blue', figlet=True)
+    log.print_log('Welcome to Fabric Quick Setup', 'green')
 
     if not mc_dir:
         mc_dirs = ask_mc_dirs(appdata_path)
@@ -143,6 +156,7 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
         # TODO: Automatically get latest snapshot as default value
         mc_version = ask_version()
     
+    # TODO: Get mod list over HTTP
     mod_list = json.load(open('mods.json'))
     if mod_ids:
         mods = [mod for mod in mod_list if mod['id'] in mod_ids]
@@ -150,32 +164,38 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
         mod_names = ask_mods(mod_list)
         mods = [mod for mod in mod_list if mod['name'] in mod_names]
     
-    log('Beginning setup: Installing Fabric Loader', 'green')
+    log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
-    # TODO: Progress bar
+    # TODO: Informative output
     fabric(mc_dir, mc_version)
-    log('Finished Fabric Loader installation.', 'green')
+    log.print_log('Finished Fabric Loader installation.', 'green')
 
-    log('Removing old mods', 'green')
+    log.print_log('Removing old mods', 'green')
     delete_mods(mc_modded_dir)
 
-    # TODO: Progress bar or checklist rather than message spam
-    with click.progressbar(mods, label='Installing Mods') as bar:
+    with click.progressbar( mods, 
+                            label='Installing Mods',
+                            show_percent=False,
+                            show_pos=True,
+                            fill_char=u'\u2588',
+                            empty_char=' ',
+                            color=colorama) as bar:
         for mod in bar:
             try:
                 install_mod(mod, mc_modded_dir, mc_version)
             except ModVersionNotFoundError:
-                log(f'\n{mod["name"]} is not available for {mc_version}.', 'red')
+                log.queue_log(f'{mod["name"]} is not available for {mc_version}.', 'red')
                 mods.remove(mod)
             except InvalidModResourceError:
-                log(f'\nThe mod data for {mod["name"]} was invalid', 'red')
+                log.print_log(f'\nThe mod data for {mod["name"]} was invalid', 'red')
                 mods.remove(mod)
             except Exception as e:
-                log(f'\nAn unknown error was encountered while installing {mod["name"]}:', 'red')
+                log.print_log(f'\nAn unknown error was encountered while installing {mod["name"]}:', 'red')
                 pprint(e)
                 mods.remove(mod)
-        
-    log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')
+    
+    log.print_queue()
+    log.print_log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')
 
 if __name__ == '__main__':
     main()
