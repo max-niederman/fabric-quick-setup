@@ -95,11 +95,12 @@ def install_mod(mod_dict, mc_modded_dir, mc_version):
         else:
             raise
 
-def resolve_dependencies(mods: set, mod_list: list):
+def resolve_dependencies(mod_ids: set, mod_list: list):
+    mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     dependencies = set()
     for mod in mods:
         dependencies.update(mod['dependencies'])
-    return set([mod for mod in mod_list if mod['id'] in dependencies])
+    return dependencies
 
 def ask_mc_dirs(appdata_path):
     questions = [
@@ -134,6 +135,7 @@ def ask_version():
     answers = prompt(questions, style=style)
     return answers['version']
 
+# TODO: Hidden mods in list
 def ask_mods(mods):
     questions = {
         'type': 'checkbox',
@@ -172,13 +174,16 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
     else:
         mod_list = requests.get(mod_list_url).json()
     
-    if mod_ids:
-        mods = set([mod for mod in mod_list if mod['id'] in mod_ids])
-    else:
+    if not mod_ids:
         mod_names = ask_mods(mod_list)
-        mods = set([mod for mod in mod_list if mod['name'] in mod_names])
-    mods.update(resolve_dependencies(mods, mod_list))
-    mods = list(mods)
+        mod_ids = [mod['id'] for mod in mod_list if mod['name'] in mod_names]
+        pprint(mod_ids)
+    mod_ids = set(mod_ids)
+    pprint(mod_ids)
+    mod_ids.update(resolve_dependencies(mod_ids, mod_list))
+    pprint(mod_ids)
+    mods = [mod for mod in mod_list if mod['id'] in mod_ids]
+    pprint(mods)
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
