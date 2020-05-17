@@ -20,12 +20,16 @@
     {
         "id": "optifine",
         "name": "Optifine",
-        "resource": {},
+        "resource": {
+            "type": "optifine"
+        },
         "dependencies": [
             {
                 "id": "optifabric",
                 "name": "Optifabric",
-                "resource": {}
+                "resource": {
+                    "type": "curseforge"
+                }
             }
         ]
     }

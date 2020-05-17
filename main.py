@@ -20,6 +20,8 @@ try:
 except ImportError:
     colored = None
 
+# TODO: Exit handling
+
 # Terminal Styling
 style = style_from_dict({
     Token.QuestionMark: '#fac731 bold',
@@ -68,6 +70,8 @@ def install_mod(mod_dict, mc_modded_dir, mc_version):
             answers = prompt(questions, style=style)
             if answers['install']:
                 install_mod(mod_dict['alternative'], mc_modded_dir, mc_version)
+        else:
+            raise
 
 def log(string, color, font='slant', figlet=False):
     if colored:
@@ -160,6 +164,9 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
         for mod in mods:
             try:
                 install_mod(mod, mc_modded_dir, mc_version)
+            except ModVersionNotFoundError:
+                log(f'{mod["name"]} is not available for {mc_version}.', 'red')
+                mods.remove(mod)
             except InvalidModResourceError:
                 log(f'The mod data for {mod["name"]} was invalid', 'red')
                 mods.remove(mod)
