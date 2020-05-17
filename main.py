@@ -161,17 +161,17 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
 
     # TODO: Progress bar or checklist rather than message spam
     with click.progressbar(mods, label='Installing Mods') as bar:
-        for mod in mods:
+        for mod in bar:
             try:
                 install_mod(mod, mc_modded_dir, mc_version)
             except ModVersionNotFoundError:
-                log(f'{mod["name"]} is not available for {mc_version}.', 'red')
+                log(f'\n{mod["name"]} is not available for {mc_version}.', 'red')
                 mods.remove(mod)
             except InvalidModResourceError:
-                log(f'The mod data for {mod["name"]} was invalid', 'red')
+                log(f'\nThe mod data for {mod["name"]} was invalid', 'red')
                 mods.remove(mod)
             except Exception as e:
-                log(f'An unknown error was encountered while installing {mod["name"]}:', 'red')
+                log(f'\nAn unknown error was encountered while installing {mod["name"]}:', 'red')
                 pprint(e)
                 mods.remove(mod)
         

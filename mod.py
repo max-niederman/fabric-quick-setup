@@ -24,6 +24,9 @@ class Mod:
     
     # TODO: Implement dependencies
     def install(self, mc_dir: str, mc_version: str):
+        if 'dependencies' in self.resource:
+            self.install_dependencies(mc_dir, mc_version)
+        
         if self.resource['type'] == 'github':
             # Get Latest Asset for Minecraft Version
             if self.resource['release']:
@@ -38,7 +41,8 @@ class Mod:
                     assets += release['assets']
                 
             # Filter assets for Minecraft version and get latest asset
-            assets = [x for x in assets if mc_version in x['name']]
+            if not self.resource['version-agnostic']:
+                assets = [x for x in assets if mc_version in x['name']]
             if assets:
                 asset = assets[-1]
             else:
@@ -57,7 +61,7 @@ class Mod:
             if mirrors:
                 mirror = mirrors[0]
             else:
-                raise ModVersionNotFoundError('No assets were found for this version of Minecraft')
+                raise ModVersionNotFoundError('No releases were found for this version of Minecraft')
 
             # Get mirror page
             with requests.get(mirror.a['href']) as r:
@@ -72,3 +76,8 @@ class Mod:
         
         else:
             raise InvalidModResourceError('No valid mod resource data was found')
+    
+    def install_dependencies(self, mc_dir: str, mc_version: str):
+        for dependency in self.resource['dependencies']:
+            mod = Mod(dependency['resource'])
+            mod.install(mc_dir, mc_version)

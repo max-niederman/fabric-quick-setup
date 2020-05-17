@@ -5,6 +5,7 @@
         "resource": {
             "type": "github",
             "repo": "gnembon/fabric-carpet",
+            "version-agnostic": false,
             "release": null
         },
         "alternative": {
@@ -21,16 +22,19 @@
         "id": "optifine",
         "name": "Optifine",
         "resource": {
-            "type": "optifine"
-        },
-        "dependencies": [
-            {
-                "id": "optifabric",
-                "name": "Optifabric",
-                "resource": {
-                    "type": "curseforge"
+            "type": "optifine",
+            "dependencies": [
+                {
+                    "id": "optifabric",
+                    "name": "Optifabric",
+                    "resource": {
+                        "type": "github",
+                        "repo": "modmuss50/OptiFabric",
+                        "version-agnostic": true,
+                        "release": null
+                    }
                 }
-            }
-        ]
+            ]
+        }
     }
 ]
