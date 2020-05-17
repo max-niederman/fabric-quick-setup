@@ -3,6 +3,7 @@ from mod import *
 import json
 import os
 import subprocess
+import requests
 import click
 import six
 from PyInquirer import (Token, ValidationError, Validator, print_json, prompt, style_from_dict)
@@ -113,12 +114,15 @@ def ask_mc_dirs(appdata_path):
     return answers
 
 def ask_version():
-    # TODO: Version validation
+    fabric_versions = requests.get('https://meta.fabricmc.net/v2/versions/game').json()
+    mc_versions = [v['version'] for v in fabric_versions]
     questions = [
         {
             'type': 'input',
             'name': 'version',
             'message': 'Enter Minecraft Version',
+            'default': mc_versions[0],
+            'validate': lambda val: True if val in mc_versions else f'{val} is not a valid version of Minecraft.'
         }
     ]
     answers = prompt(questions, style=style)
@@ -136,7 +140,7 @@ def ask_mods(mods):
 
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
-@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/mod-list/mods.json?token=AEVMMKS57FD4JJR55AQW54S6ZHSKO', type=str, help='Mod list URL.')
+@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKS57FD4JJR55AQW54S6ZHSKO', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
@@ -153,7 +157,6 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
         mc_dir, mc_modded_dir = mc_dirs['mc_dir'], mc_dirs['mc_modded_dir']
 
     if not mc_version:
-        # TODO: Automatically get latest snapshot as default value
         mc_version = ask_version()
     
     mod_list = requests.get(mod_list_url).json()

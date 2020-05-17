@@ -1,0 +1,58 @@
+[
+    {
+        "id": "fabric",
+        "name": "Fabric API",
+        "resource": {
+            "type": "curseforge"
+        }
+    },
+    {
+        "id": "carpet",
+        "name": "Carpet Mod",
+        "resource": {
+            "type": "github",
+            "repo": "gnembon/fabric-carpet",
+            "version-agnostic": false,
+            "release": null
+        },
+        "alternative": {
+            "id": "quick-carpet",
+            "name": "Quick Carpet",
+            "resource": {
+                "type": "github",
+                "repo": "gnembon/quick-carpet",
+                "version-agnostic": false,
+                "release": null
+            }
+        }
+    },
+    {
+        "id": "modmenu",
+        "name": "Mod Menu",
+        "resource": {
+            "type": "github",
+            "repo": "Prospector/ModMenu",
+            "version-agnostic": true,
+            "release": null
+        }
+    },
+    {
+        "id": "optifine",
+        "name": "Optifine",
+        "resource": {
+            "type": "optifine",
+            "dependencies": [
+                {
+                    "id": "optifabric",
+                    "name": "Optifabric",
+                    "resource": {
+                        "type": "github",
+                        "repo": "modmuss50/OptiFabric",
+                        "version-agnostic": true,
+                        "release": null
+                    }
+                }
+            ]
+        }
+    }
+]
