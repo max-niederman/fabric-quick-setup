@@ -20,8 +20,6 @@ try:
 except ImportError:
     colored = None
 
-# TODO: Exit handling
-
 # Terminal Styling
 style = style_from_dict({
     Token.QuestionMark: '#fac731 bold',
@@ -198,4 +196,10 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
     log.print_log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyError:
+        log.print_log('KeyError detected. Exiting...', 'red')
+    except Exception as e:
+        log.print_log(f'An unknown error was encountered:', 'red')
+        pprint(e)
