@@ -137,11 +137,12 @@ def ask_mods(mods):
 
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
+@click.option('-u', '--mod-list', 'mod_list_url', default='', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
-@click.option('-v', '--version', 'mc_version', help='Minecraft version to install')
-@click.option('-m', '--mods', 'mod_ids', multiple=True, help='The person to greet.')
-def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
+@click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
+@click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='The person to greet.')
+def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
     CLI to install Fabric Loader and Popular Mods
     """
@@ -156,8 +157,7 @@ def main(appdata_path, mc_dir, mc_modded_dir, mc_version, mod_ids):
         # TODO: Automatically get latest snapshot as default value
         mc_version = ask_version()
     
-    # TODO: Get mod list over HTTP
-    mod_list = json.load(open('mods.json'))
+    mod_list = requests.get(mod_list_url).json()
     if mod_ids:
         mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     else:
