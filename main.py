@@ -177,13 +177,9 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
     if not mod_ids:
         mod_names = ask_mods(mod_list)
         mod_ids = [mod['id'] for mod in mod_list if mod['name'] in mod_names]
-        pprint(mod_ids)
     mod_ids = set(mod_ids)
-    pprint(mod_ids)
     mod_ids.update(resolve_dependencies(mod_ids, mod_list))
-    pprint(mod_ids)
     mods = [mod for mod in mod_list if mod['id'] in mod_ids]
-    pprint(mods)
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
