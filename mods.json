@@ -3,7 +3,7 @@
         "id": "fabric",
         "name": "Fabric API",
         "resource": {
-            "type": "curseforge"
+            "type": "fabric"
         }
     },
     {

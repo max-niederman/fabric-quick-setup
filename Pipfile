@@ -7,6 +7,8 @@ verify_ssl = true
 
 [packages]
 bs4 = "*"
+jenkinsapi = "*"
+regex = "*"
 
 [requires]
 python_version = "3.8"

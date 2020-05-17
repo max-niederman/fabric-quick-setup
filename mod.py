@@ -1,6 +1,9 @@
 # Mod.py
 import requests
+import jenkinsapi
+from jenkinsapi.jenkins import Jenkins
 import json
+import re
 from bs4 import BeautifulSoup
 from pprint import pprint
 
@@ -48,6 +51,32 @@ class Mod:
                 raise ModVersionNotFoundError('No assets were found for this version of Minecraft')
             
             download(asset['browser_download_url'], out=f'{mc_dir}\mods\\')
+        
+        elif self.resource['type'] == 'fabric':
+            # Snapshot to eventual release version
+            fabric_versions = requests.get('https://meta.fabricmc.net/v2/versions/game').json()
+            mc_versions = [v['version'] for v in fabric_versions]
+            f = re.compile('\d.\d\d$')
+            seen_version = False
+            if f.match(mc_version):
+                release_version = mc_version
+            else:
+                for version in mc_versions:
+                    if version == mc_version:
+                        seen_version = True
+                    
+                    if f.match(version) and seen_version:
+                        release_version = version[:-1] + str(int(version[-1]) + 1)
+                        break
+            
+            # Get Jenkins Artifact and Download
+            jenkins = Jenkins('https://jenkins.modmuss50.me')
+            job = jenkins.get_job(f'Fabric/API {release_version}')
+            build = job.get_last_good_build()
+            artifacts = build.get_artifact_dict()
+            artifact = list(artifacts.values())[-1]
+            artifact.save_to_dir(f'{mc_dir}\mods\\')
+                    
         
         elif self.resource['type'] == 'optifine':
             # Get optifine.net downloads page

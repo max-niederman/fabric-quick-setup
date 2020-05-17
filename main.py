@@ -138,6 +138,7 @@ def ask_mods(mods):
     answers = prompt(questions)
     return answers['mods']
 
+# TODO: Latest snapshot flag
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
 @click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
