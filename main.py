@@ -95,11 +95,11 @@ def install_mod(mod_dict, mc_modded_dir, mc_version):
         else:
             raise
 
-def resolve_dependencies(mods: list, mod_list: list):
+def resolve_dependencies(mods: set, mod_list: list):
     dependencies = set()
     for mod in mods:
         dependencies.update(mod['dependencies'])
-    return [mod for mod in mod_list if mod['id'] in dependencies]
+    return set([mod for mod in mod_list if mod['id'] in dependencies])
 
 def ask_mc_dirs(appdata_path):
     questions = [
@@ -147,12 +147,13 @@ def ask_mods(mods):
 # TODO: Latest snapshot flag
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
+@click.option('--debug', is_flag=True, default=False)
 @click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
 @click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='The person to greet.')
-def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
+def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
     CLI to install Fabric Loader and Popular Mods
     """
@@ -166,14 +167,18 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
     if not mc_version:
         mc_version = ask_version()
     
-    mod_list = requests.get(mod_list_url).json()
-    #mod_list = json.load(open('mods.json'))
+    if debug:
+        mod_list = json.load(open('mods.json'))
+    else:
+        mod_list = requests.get(mod_list_url).json()
+    
     if mod_ids:
-        mods = [mod for mod in mod_list if mod['id'] in mod_ids]
+        mods = set([mod for mod in mod_list if mod['id'] in mod_ids])
     else:
         mod_names = ask_mods(mod_list)
-        mods = [mod for mod in mod_list if mod['name'] in mod_names]
-    mods[:0] = resolve_dependencies(mods, mod_list)
+        mods = set([mod for mod in mod_list if mod['name'] in mod_names])
+    mods.update(resolve_dependencies(mods, mod_list))
+    mods = list(mods)
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
@@ -214,6 +219,3 @@ if __name__ == '__main__':
         main()
     except KeyError:
         log.print_log('KeyError detected. Exiting...', 'red')
-    except Exception as e:
-        log.print_log(f'An unknown error was encountered:', 'red')
-        pprint(e)
