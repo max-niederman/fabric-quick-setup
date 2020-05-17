@@ -173,7 +173,7 @@ def main(appdata_path, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids)
     fabric(mc_dir, mc_version)
     log.print_log('Finished Fabric Loader installation.', 'green')
 
-    log.print_log('Removing old mods', 'green')
+    log.print_log('Starting mod installation. This may take a while...', 'green')
     delete_mods(mc_modded_dir)
 
     with click.progressbar( mods, 
