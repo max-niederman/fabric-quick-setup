@@ -140,7 +140,7 @@ def ask_mods(mods):
 
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
-@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKS57FD4JJR55AQW54S6ZHSKO', type=str, help='Mod list URL.')
+@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
