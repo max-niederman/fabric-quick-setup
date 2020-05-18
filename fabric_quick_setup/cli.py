@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Main.py
-from mod import *
+from fabric_quick_setup.mod import *
 import json
 import os
 import sys
@@ -250,7 +250,4 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
     clean_exit('green')
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyError:
-        log.print_log('KeyError detected. Exiting...', 'red')
+    main()
