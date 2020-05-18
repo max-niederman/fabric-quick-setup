@@ -10,7 +10,7 @@ setuptools.setup(
     description='CLI to quickly and easily install Fabric Loader and Popular Minecraft Mods',
     long_description=readme(),
     long_description_content_type='text/markdown',
-    url='http://github.com/max-niederman/fabric-quick-install',
+    url='http://github.com/max-niederman/fabric-quick-setup',
     author='Max Niederman',
     author_email='maxniederman@gmail.com',
     license='MIT',
