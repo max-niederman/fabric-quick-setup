@@ -172,6 +172,7 @@ def ask_mods(mods):
     answers = prompt(questions)
     return answers['mods']
 
+# TODO: Add option to install for server
 @click.command()
 @click.option('--debug', is_flag=True, default=False)
 @click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
