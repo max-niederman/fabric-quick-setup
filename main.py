@@ -2,6 +2,7 @@
 from mod import *
 import json
 import os
+import sys
 import subprocess
 import requests
 import click
@@ -55,8 +56,12 @@ class Log:
 
 log = Log()
 
-def fabric(mc_dir, mc_version): 
-    subprocess.run(['java', 
+def clean_exit(color: str):
+    log.print_log('Exiting...', color)
+    sys.exit()
+
+def install_fabric(mc_dir, mc_version): 
+    installer = subprocess.run(['java', 
         '-jar', 
         'fabric-installer.jar', 
         'client',
@@ -67,7 +72,22 @@ def fabric(mc_dir, mc_version):
         '-dir',
         mc_dir,
         ],
-        stdout=subprocess.DEVNULL)
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE)
+    if installer.stderr:
+        questions = [
+                {
+                    'type': 'confirm',
+                    'message': f'Fabric Installer errored. Should I continue with the mod installation anyway? y/N',
+                    'name': 'continue',
+                    'default': False,
+                }
+            ]
+        answers = prompt(questions, style=style)
+        if answers['continue']:
+            return
+        else:
+            clean_exit('red')
 
 def delete_mods(mc_dir):
     mod_dir = f'{mc_dir}\\mods'
@@ -196,8 +216,7 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
-    # TODO: Informative output
-    fabric(mc_dir, mc_version)
+    install_fabric(mc_dir, mc_version)
     log.print_log('Finished Fabric Loader installation.', 'green')
 
     log.print_log('Starting mod installation. This may take a while...', 'green')
@@ -227,6 +246,7 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
     
     log.print_queue()
     log.print_log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')
+    clean_exit('green')
 
 if __name__ == '__main__':
     try:
