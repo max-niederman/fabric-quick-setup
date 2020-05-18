@@ -2,6 +2,7 @@
     {
         "id": "fabric",
         "name": "Fabric API",
+        "visible": false,
         "resource": {
             "type": "fabric"
         }
@@ -9,6 +10,7 @@
     {
         "id": "carpet",
         "name": "Carpet Mod",
+        "visible": true,
         "resource": {
             "type": "github",
             "repo": "gnembon/fabric-carpet",
@@ -29,6 +31,7 @@
     {
         "id": "modmenu",
         "name": "Mod Menu",
+        "visible": true,
         "resource": {
             "type": "github",
             "repo": "Prospector/ModMenu",
@@ -42,6 +45,7 @@
     {
         "id": "optifine",
         "name": "Optifine",
+        "visible": true,
         "resource": {
             "type": "optifine"
         },
@@ -52,6 +56,7 @@
     {
         "id": "optifabric",
         "name": "Optifabric",
+        "visible": false,
         "resource": {
             "type": "github",
             "repo": "modmuss50/OptiFabric",

@@ -139,13 +139,12 @@ def ask_version():
     answers = prompt(questions, style=style)
     return answers['version']
 
-# TODO: Hidden mods in list
 def ask_mods(mods):
     questions = {
         'type': 'checkbox',
         'message': 'Select Mods to Install',
         'name': 'mods',
-        'choices': [{ 'name': mod['name'] } for mod in mods],
+        'choices': [{ 'name': mod['name'] } for mod in mods if mod['visible']],
     }
     answers = prompt(questions)
     return answers['mods']
