@@ -1,2 +1,2 @@
-# fabric-setup
+# fabric-quick-setup
 TODO: Write README
