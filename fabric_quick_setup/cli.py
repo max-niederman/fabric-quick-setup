@@ -172,27 +172,26 @@ def ask_mods(mods):
     answers = prompt(questions)
     return answers['mods']
 
-# TODO: Add option to install for server
 @click.command()
 @click.option('--debug', is_flag=True, default=False)
+@click.option('-s', '--server', is_flag=True, default=False)
 @click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
 @click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='The person to greet.')
-def main(debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
+def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
     CLI to install Fabric Loader and Popular Mods
     """
     log.print_log('Fabric Quick Setup', 'blue', figlet=True)
     log.print_log('Welcome to Fabric Quick Setup', 'green')
 
-    if platform.system() == 'Windows':
-        mc_default_path = {
-            'Windows': f'{os.getenv("APPDATA")}\\.minecraft',
-            'Darwin': f'{os.getenv("HOME")}/Library/Application Support/minecraft',
-            'Linux': f'{os.getenv("HOME")}/.minecraft'
-        }[platform.system()]
+    mc_default_path = {
+        'Windows': f'{os.getenv("APPDATA")}\\.minecraft',
+        'Darwin': f'{os.getenv("HOME")}/Library/Application Support/minecraft',
+        'Linux': f'{os.getenv("HOME")}/.minecraft'
+    }[platform.system()]
 
     if not mc_dir:
         mc_dirs = ask_mc_dirs(mc_default_path)
