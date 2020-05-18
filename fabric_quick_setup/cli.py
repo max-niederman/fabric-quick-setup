@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Main.py
 from mod import *
 import json
