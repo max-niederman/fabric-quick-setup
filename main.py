@@ -99,7 +99,8 @@ def resolve_dependencies(mod_ids: set, mod_list: list):
     mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     dependencies = set()
     for mod in mods:
-        dependencies.update(mod['dependencies'])
+        if 'dependencies' in mod:
+            dependencies.update(mod['dependencies'])
     return dependencies
 
 def ask_mc_dirs(appdata_path):
