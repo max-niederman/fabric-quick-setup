@@ -180,7 +180,7 @@ def ask_mods(mods):
 @click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='The person to greet.')
 def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
-    CLI to install Fabric Loader and Popular Mods
+    CLI to quickly and easily install Fabric Loader and Popular Minecraft Mods
     """
     log.print_log('Fabric Quick Setup', 'blue', figlet=True)
     log.print_log('Welcome to Fabric Quick Setup', 'green')
