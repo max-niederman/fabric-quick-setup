@@ -120,9 +120,13 @@ def ask_mc_dirs(appdata_path):
     answers = prompt(questions, style=style)
     return answers
 
-def ask_version():
+def get_mc_versions():
     fabric_versions = requests.get('https://meta.fabricmc.net/v2/versions/game').json()
     mc_versions = [v['version'] for v in fabric_versions]
+    return mc_versions
+
+def ask_version():
+    mc_versions = get_mc_versions()
     questions = [
         {
             'type': 'input',
@@ -146,7 +150,6 @@ def ask_mods(mods):
     answers = prompt(questions)
     return answers['mods']
 
-# TODO: Latest snapshot flag
 @click.command()
 @click.option('--appdata-path', type=click.Path(), envvar='APPDATA')
 @click.option('--debug', is_flag=True, default=False)
@@ -168,6 +171,16 @@ def main(appdata_path, debug, mod_list_url, mc_dir, mc_modded_dir, mc_version, m
 
     if not mc_version:
         mc_version = ask_version()
+    elif mc_version == 'latest':
+        mc_versions = get_mc_versions()
+        mc_version = mc_versions[0]
+    elif mc_version == 'snapshot':
+        mc_versions = get_mc_versions()
+        f = re.compile('\d.\d\d$')
+        for version in mc_versions:
+            if f.match(version):
+                mc_version = version
+                break
     
     if debug:
         mod_list = json.load(open('mods.json'))
