@@ -6,7 +6,7 @@ def readme():
 
 setuptools.setup(
     name='fabric-quick-setup',
-    version='0.1.1',
+    version='0.1.3',
     description='CLI to quickly and easily install Fabric Loader and Popular Minecraft Mods',
     long_description=readme(),
     long_description_content_type='text/markdown',

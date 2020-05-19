@@ -62,20 +62,34 @@ def clean_exit(color: str):
     log.print_log('Exiting...', color)
     sys.exit()
 
-def install_fabric(mc_dir, mc_version): 
-    installer = subprocess.run(['java', 
-        '-jar', 
-        'fabric-installer.jar', 
-        'client',
-        '-snapshot',
-        '-noprofile',
-        '-mcversion',
-        mc_version,
-        '-dir',
-        mc_dir,
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.PIPE)
+def install_fabric(mc_dir, mc_version, server): 
+    if server:
+        installer = subprocess.run(['java', 
+            '-jar', 
+            'fabric-installer.jar', 
+            'server',
+            '-snapshot',
+            '-mcversion',
+            mc_version,
+            '-dir',
+            mc_dir,
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE)
+    else:
+        installer = subprocess.run(['java', 
+            '-jar', 
+            'fabric-installer.jar', 
+            'client',
+            '-snapshot',
+            '-noprofile',
+            '-mcversion',
+            mc_version,
+            '-dir',
+            mc_dir,
+            ],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE)
     if installer.stderr:
         questions = [
                 {
@@ -93,7 +107,10 @@ def install_fabric(mc_dir, mc_version):
 
 def delete_mods(mc_dir):
     mod_dir = f'{mc_dir}\\mods'
-    files = [f for f in os.listdir(mod_dir)]
+    try:
+        files = [f for f in os.listdir(mod_dir)]
+    except FileNotFoundError:
+        return
     for f in files:
         os.remove(os.path.join(mod_dir, f))
 
@@ -125,8 +142,8 @@ def resolve_dependencies(mod_ids: set, mod_list: list):
             dependencies.update(mod['dependencies'])
     return dependencies
 
-def ask_mc_dirs(mc_default_path):
-    questions = [
+def ask_mc_dirs(mc_default_path, server):
+    client_questions = [
         {
             'type': 'input',
             'name': 'mc_dir',
@@ -140,7 +157,24 @@ def ask_mc_dirs(mc_default_path):
             'default': lambda answers : answers['mc_dir']
         }
     ]
-    answers = prompt(questions, style=style)
+    server_questions = [
+        {
+            'type': 'input',
+            'name': 'mc_dir',
+            'message': 'Enter Server Directory',
+            'default': lambda answers : f'{mc_default_path}'
+        },
+        {
+            'type': 'input',
+            'name': 'mc_modded_dir',
+            'message': 'Enter modded server directory. 99.99% of people should leave this at the default value.',
+            'default': lambda answers : answers['mc_dir']
+        }
+    ]
+    if server:
+        answers = prompt(server_questions, style=style)
+    else:
+        answers = prompt(client_questions, style=style)
     return answers
 
 def get_mc_versions():
@@ -175,7 +209,7 @@ def ask_mods(mods):
 @click.command()
 @click.option('--debug', is_flag=True, default=False)
 @click.option('-s', '--server', is_flag=True, default=False)
-@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-setup/master/mods.json?token=AEVMMKTTLQNJ7F5VGSNJYSS6ZKOBK', type=str, help='Mod list URL.')
+@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-quick-setup/master/fabric_quick_setup/mods.json', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
@@ -187,14 +221,14 @@ def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids
     log.print_log('Fabric Quick Setup', 'blue', figlet=True)
     log.print_log('Welcome to Fabric Quick Setup', 'green')
 
-    mc_default_path = {
+    mc_default_path = '' if server else {
         'Windows': f'{os.getenv("APPDATA")}\\.minecraft',
         'Darwin': f'{os.getenv("HOME")}/Library/Application Support/minecraft',
         'Linux': f'{os.getenv("HOME")}/.minecraft'
     }[platform.system()]
 
     if not mc_dir:
-        mc_dirs = ask_mc_dirs(mc_default_path)
+        mc_dirs = ask_mc_dirs(mc_default_path, server)
         mc_dir, mc_modded_dir = mc_dirs['mc_dir'], mc_dirs['mc_modded_dir']
 
     if not mc_version:
@@ -224,7 +258,7 @@ def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids
     
     log.print_log('Beginning setup: Installing Fabric Loader', 'green')
     
-    install_fabric(mc_dir, mc_version)
+    install_fabric(mc_dir, mc_version, server)
     log.print_log('Finished Fabric Loader installation.', 'green')
 
     log.print_log('Starting mod installation. This may take a while...', 'green')
