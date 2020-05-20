@@ -247,7 +247,7 @@ def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids
     if debug:
         mod_list = json.load(open('mods.json'))
     else:
-        mod_list = requests.get(mod_list_url).json()
+        mod_list = json.loads(requests.get(mod_list_url).content)
     
     if not mod_ids:
         mod_names = ask_mods(mod_list)

@@ -4,6 +4,7 @@ import jenkinsapi
 from jenkinsapi.jenkins import Jenkins
 import json
 import re
+import lxml
 from bs4 import BeautifulSoup
 from pprint import pprint
 
