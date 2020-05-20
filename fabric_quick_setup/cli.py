@@ -216,13 +216,14 @@ def ask_mods(mods):
 
 @click.command()
 @click.option('--debug', is_flag=True, default=False)
+@click.option('--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-quick-setup/master/fabric_quick_setup/mods.json', type=str, help='Mod list URL.')
+@click.option('--installer', 'installer_path', type=click.Path(), help='Path to Fabric Installer')
 @click.option('-s', '--server', is_flag=True, default=False)
-@click.option('-u', '--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-quick-setup/master/fabric_quick_setup/mods.json', type=str, help='Mod list URL.')
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
 @click.option('-t', '--mc-modded-dir', type=click.Path(), help='Minecraft modded directory')
 @click.option('-v', '--version', 'mc_version', type=str, help='Minecraft version to install')
-@click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='The person to greet.')
-def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids):
+@click.option('-m', '--mods', 'mod_ids', type=str, multiple=True, help='Mods to install. Use this once for each mod.')
+def main(debug, mod_list_url, installer_path, server, mc_dir, mc_modded_dir, mc_version, mod_ids):
     """
     CLI to install Fabric Loader and Popular Mods
     """
@@ -264,9 +265,10 @@ def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids
     mod_ids.update(resolve_dependencies(mod_ids, mod_list))
     mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     
-    log.print_log('Beginning setup: Downloading Fabric Installer', 'green')
-    installer_path = download_fabric_installer(mc_dir)
-    log.print_log('Finished Downloading Fabric Installer.', 'green')
+    if not installer_path:
+        log.print_log('Beginning setup: Downloading Fabric Installer', 'green')
+        installer_path = download_fabric_installer(mc_dir)
+        log.print_log('Finished Downloading Fabric Installer.', 'green')
 
     log.print_log('Starting Fabric Loader installation.', 'green')
     install_fabric(installer_path, mc_dir, mc_version, server)
