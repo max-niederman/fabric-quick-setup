@@ -21,7 +21,8 @@ setuptools.setup(
         'Programming Language :: Python :: 3'
     ],
     install_requires=[
-        'lxml'
+        'lxml',
+        'termcolor'
     ],
     entry_points = {
         'console_scripts': ['fabric-quick-setup=fabric_quick_setup.cli:main']
