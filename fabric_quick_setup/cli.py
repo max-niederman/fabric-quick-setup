@@ -208,12 +208,12 @@ def ask_version():
     answers = prompt(questions, style=style)
     return answers['version']
 
-def ask_mods(mods):
+def ask_mods(mods, server):
     questions = {
         'type': 'checkbox',
         'message': 'Select Mods to Install',
         'name': 'mods',
-        'choices': [{ 'name': mod['name'] } for mod in mods if mod['visible']],
+        'choices': [{ 'name': mod['name'] } for mod in mods if mod['visible']['server' if server else 'client']],
     }
     answers = prompt(questions)
     return answers['mods']
@@ -267,7 +267,7 @@ def main(debug, mod_list_url, installer_path, server, mc_dir, mc_modded_dir, mc_
         mod_list = json.loads(requests.get(mod_list_url).content)
     
     if not mod_ids:
-        mod_names = ask_mods(mod_list)
+        mod_names = ask_mods(mod_list, server)
         mod_ids = [mod['id'] for mod in mod_list if mod['name'] in mod_names]
     mod_ids = set(mod_ids)
     mod_ids.update(resolve_dependencies(mod_ids, mod_list))
