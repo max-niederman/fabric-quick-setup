@@ -62,6 +62,10 @@ def clean_exit(color: str):
     log.print_log('Exiting...', color)
     sys.exit()
 
+def ensure_dir(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 def download_fabric_installer(dir):
     fabric_installers = requests.get('https://meta.fabricmc.net/v2/versions/installer').json()
     r = requests.get(fabric_installers[0]['url'])
@@ -239,6 +243,10 @@ def main(debug, mod_list_url, installer_path, server, mc_dir, mc_modded_dir, mc_
     if not mc_dir:
         mc_dirs = ask_mc_dirs(mc_default_path, server)
         mc_dir, mc_modded_dir = mc_dirs['mc_dir'], mc_dirs['mc_modded_dir']
+    
+    ensure_dir(mc_dir)
+    ensure_dir(mc_modded_dir)
+    ensure_dir(f'{mc_modded_dir}\mods')
 
     if not mc_version:
         mc_version = ask_version()
