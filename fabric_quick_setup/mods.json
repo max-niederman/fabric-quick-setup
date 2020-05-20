@@ -20,8 +20,9 @@
         "resource": {
             "type": "github",
             "repo": "gnembon/fabric-carpet",
-            "version-agnostic": false,
-            "release": null
+            "filters": {
+                "mc-version": true
+            }
         },
         "alternative": {
             "id": "quick-carpet",
@@ -29,8 +30,26 @@
             "resource": {
                 "type": "github",
                 "repo": "gnembon/quick-carpet",
-                "version-agnostic": false,
-                "release": null
+                "filters": {
+                    "mc-version": true
+                }
+            }
+        }
+    },
+    {
+        "id": "lithium",
+        "name": "Lithium",
+        "visible": {
+            "server": true,
+            "client": false
+        },
+        "resource": {
+            "type": "github",
+            "repo": "jellysquid3/lithium-fabric",
+            "filters": {
+                "mc-version": true,
+                "no-sources": true,
+                "no-dev": true
             }
         }
     },
@@ -44,8 +63,7 @@
         "resource": {
             "type": "github",
             "repo": "Prospector/ModMenu",
-            "version-agnostic": true,
-            "release": null
+            "filters": {}
         },
         "dependencies": [
             "fabric"
@@ -75,8 +93,7 @@
         "resource": {
             "type": "github",
             "repo": "modmuss50/OptiFabric",
-            "version-agnostic": true,
-            "release": null
+            "filters": {}
         }
     }
 ]

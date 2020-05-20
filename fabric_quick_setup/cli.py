@@ -303,9 +303,12 @@ def main(debug, mod_list_url, installer_path, server, mc_dir, mc_modded_dir, mc_
                 log.print_log(f'\nThe mod data for {mod["name"]} was invalid', 'red')
                 mods.remove(mod)
             except Exception as e:
-                log.print_log(f'\nAn unknown error was encountered while installing {mod["name"]}:', 'red')
-                pprint(e)
-                mods.remove(mod)
+                if debug:
+                    raise
+                else:
+                    log.print_log(f'\nAn unknown error was encountered while installing {mod["name"]}:', 'red')
+                    pprint(e)
+                    mods.remove(mod)
     
     log.print_queue()
     log.print_log(f'Successfully installed Fabric Loader and {len(mods)} mod(s) for Minecraft {mc_version}.', 'green')

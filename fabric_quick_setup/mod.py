@@ -29,8 +29,8 @@ class Mod:
     def install(self, mc_dir: str, mc_version: str):
         if self.resource['type'] == 'github':
             # Get Latest Asset for Minecraft Version
-            if self.resource['release']:
-                release = requests.get(f'https://api.github.com/repos/{self.resource["repo"]}/releases/{self.resource["release"]}').json()
+            if 'release' in self.resource['filters']:
+                release = requests.get(f'https://api.github.com/repos/{self.resource["repo"]}/releases/{self.resource["filters"]["release"]}').json()
                 assets = release.assets
             else:
                 # Get all release assets for repo
@@ -40,11 +40,18 @@ class Mod:
                 for release in releases:
                     assets += release['assets']
                 
-            # Filter assets for Minecraft version and get latest asset
-            if not self.resource['version-agnostic']:
+            # Filter assets and get latest asset
+            if 'mc-version' in self.resource['filters']:
                 assets = [x for x in assets if mc_version in x['name']]
+            
+            if 'no-sources' in self.resource['filters']:
+                assets = [x for x in assets if not 'sources' in x['name']]
+            
+            if 'no-dev' in self.resource['filters']:
+                assets = [x for x in assets if not 'dev' in x['name']]
+
             if assets:
-                asset = assets[-1]
+                asset = assets[0]
             else:
                 raise ModVersionNotFoundError('No assets were found for this version of Minecraft')
             
