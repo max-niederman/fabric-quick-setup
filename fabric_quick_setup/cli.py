@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Main.py
-from fabric_quick_setup.mod import *
+from fabric_quick_setup.mod import Mod, InvalidModResourceError, ModVersionNotFoundError
 import json
 import os
 import platform
@@ -62,11 +62,19 @@ def clean_exit(color: str):
     log.print_log('Exiting...', color)
     sys.exit()
 
-def install_fabric(mc_dir, mc_version, server): 
+def download_fabric_installer(dir):
+    fabric_installers = requests.get('https://meta.fabricmc.net/v2/versions/installer').json()
+    r = requests.get(fabric_installers[0]['url'])
+    filename = f'{dir}\\fabric-installer.jar'
+    with open(filename, 'wb') as outfile:
+        outfile.write(r.content)
+    return filename
+
+def install_fabric(installer_path, mc_dir, mc_version, server): 
     if server:
         installer = subprocess.run(['java', 
             '-jar', 
-            'fabric-installer.jar', 
+            installer_path, 
             'server',
             '-snapshot',
             '-mcversion',
@@ -79,7 +87,7 @@ def install_fabric(mc_dir, mc_version, server):
     else:
         installer = subprocess.run(['java', 
             '-jar', 
-            'fabric-installer.jar', 
+            installer_path, 
             'client',
             '-snapshot',
             '-noprofile',
@@ -256,9 +264,12 @@ def main(debug, server, mod_list_url, mc_dir, mc_modded_dir, mc_version, mod_ids
     mod_ids.update(resolve_dependencies(mod_ids, mod_list))
     mods = [mod for mod in mod_list if mod['id'] in mod_ids]
     
-    log.print_log('Beginning setup: Installing Fabric Loader', 'green')
-    
-    install_fabric(mc_dir, mc_version, server)
+    log.print_log('Beginning setup: Downloading Fabric Installer', 'green')
+    installer_path = download_fabric_installer(mc_dir)
+    log.print_log('Finished Downloading Fabric Installer.', 'green')
+
+    log.print_log('Starting Fabric Loader installation.', 'green')
+    install_fabric(installer_path, mc_dir, mc_version, server)
     log.print_log('Finished Fabric Loader installation.', 'green')
 
     log.print_log('Starting mod installation. This may take a while...', 'green')
