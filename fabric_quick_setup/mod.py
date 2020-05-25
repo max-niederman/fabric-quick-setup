@@ -43,12 +43,6 @@ class Mod:
             # Filter assets and get latest asset
             if 'mc-version' in self.resource['filters']:
                 assets = [x for x in assets if mc_version in x['name']]
-            
-            if 'no-sources' in self.resource['filters']:
-                assets = [x for x in assets if not 'sources' in x['name']]
-            
-            if 'no-dev' in self.resource['filters']:
-                assets = [x for x in assets if not 'dev' in x['name']]
 
             if assets:
                 asset = assets[0]

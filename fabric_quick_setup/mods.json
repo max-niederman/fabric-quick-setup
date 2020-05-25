@@ -37,23 +37,6 @@
         }
     },
     {
-        "id": "lithium",
-        "name": "Lithium",
-        "visible": {
-            "server": true,
-            "client": false
-        },
-        "resource": {
-            "type": "github",
-            "repo": "jellysquid3/lithium-fabric",
-            "filters": {
-                "mc-version": true,
-                "no-sources": true,
-                "no-dev": true
-            }
-        }
-    },
-    {
         "id": "modmenu",
         "name": "Mod Menu",
         "visible": {
