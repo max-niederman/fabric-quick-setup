@@ -22,7 +22,8 @@ setuptools.setup(
     ],
     install_requires=[
         'lxml',
-        'termcolor'
+        'termcolor',
+        'colorama'
     ],
     entry_points = {
         'console_scripts': ['fabric-quick-setup=fabric_quick_setup.cli:main']

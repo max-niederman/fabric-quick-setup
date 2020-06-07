@@ -220,7 +220,7 @@ def ask_mods(mods, server):
 
 @click.command()
 @click.option('--debug', is_flag=True, default=False)
-@click.option('--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-quick-setup/master/fabric_quick_setup/mods.json', type=str, help='Mod list URL.')
+@click.option('--mod-list', 'mod_list_url', default='https://raw.githubusercontent.com/max-niederman/fabric-quick-setup/master/mods.json', type=str, help='Mod list URL.')
 @click.option('--installer', 'installer_path', type=click.Path(), help='Path to Fabric Installer')
 @click.option('-s', '--server', is_flag=True, default=False)
 @click.option('-d', '--mc-dir', type=click.Path(), help='Minecraft directory')
