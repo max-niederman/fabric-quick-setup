@@ -7,6 +7,13 @@ verify_ssl = true
 
 [packages]
 requests = "*"
+beautifulsoup4 = "*"
+click = "*"
+jenkinsapi = "*"
+pprint = "*"
+pyfiglet = "*"
+pyinquirer = "*"
+six = "*"
 
 [requires]
 python_version = "3.8"
