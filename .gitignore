@@ -126,7 +126,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# Shell Scripts
-*.sh
-*.bat
